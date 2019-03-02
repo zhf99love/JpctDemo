@@ -156,10 +156,10 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
                 try {
                     world = new World();
                     Log.i("happy", "create start");
-//                    facePoints = Loader.loadOBJ(getStream("assets/face/head3d.obj"),
-//                            getStream("assets/face/head3d.mtl"), 0.23f);
-                    facePoints = Loader.loadOBJ(getStream("assets/headex/merge3d.obj"),
-                            getStream("assets/headex/merge3d.obj.mtl"), 0.23f);
+                    facePoints = Loader.loadOBJ(getStream("assets/face/head3d.obj"),
+                            getStream("assets/face/head3d.mtl"), 0.23f);
+//                    facePoints = Loader.loadOBJ(getStream("assets/headex/merge3d.obj"),
+//                            getStream("assets/headex/merge3d.obj.mtl"), 0.23f);
 
                     Log.i("happy", "object3Ds: end");
                     textureInit();
@@ -210,8 +210,8 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
      * @throws Exception
      */
     private void textureInit() throws IOException {
-//        Bitmap bitmap1 = BitmapFactory.decodeStream(getStream("assets/face/head3d.jpg"));
-        Bitmap bitmap1 = BitmapFactory.decodeStream(getStream("assets/headex/merge3d.jpg"));
+        Bitmap bitmap1 = BitmapFactory.decodeStream(getStream("assets/face/head3d.jpg"));
+//        Bitmap bitmap1 = BitmapFactory.decodeStream(getStream("assets/headex/merge3d.jpg"));
         Log.i("happy", "bitmap: end");
         Texture texture1 = new Texture(bitmap1);
         TextureManager.getInstance().addTexture("face", texture1);
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
      */
     private void lightInit(World world, Object3D object3D) {
 //        环境光
-        world.setAmbientLight(200, 200, 200);
+        world.setAmbientLight(120, 120, 120);
 
         SimpleVector vector1 = object3D.getTransformedCenter();
         vector1.y += 15;
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
 
         Light light1 = new Light(world);
         light1.enable();
-        light1.setIntensity(100, 100, 100);
+        light1.setIntensity(140, 140, 140);
         light1.setPosition(vector1);
 //
         SimpleVector vector2 = object3D.getTransformedCenter();
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
 
         Light light2 = new Light(world);
         light2.enable();
-        light2.setIntensity(160, 160, 160);
+        light2.setIntensity(180, 180, 180);
         light2.setPosition(vector2);
     }
 
