@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
+import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Light;
 import com.threed.jpct.Loader;
 import com.threed.jpct.Matrix;
@@ -41,12 +42,9 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
     private ContentLoadingProgressBar progressBar;
 
     private World world = null;
-    private Light light;
+    private Light light1, light2, light3;
 
     private FrameBuffer frameBuffer = null;
-
-    private Object3D[] object3Ds;
-    private Bitmap bitmap;
 
     private ScaleGestureDetector gestureDec = null;
 
@@ -60,10 +58,14 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
 
     private float scale = 0f;
 
-    private Object3D plane;
+    private Object3D mainFace;
+    private Object3D[] facePoints;
 
-//    表示是否在放大
+
+    //    表示是否在放大
     private boolean isScale = false;
+
+    private GLSLShader shader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
         mGLView.setRenderer(new GLSurfaceView.Renderer() {
 
             @Override
-            public void onSurfaceCreated(GL10 gl, EGLConfig config) {}
+            public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+            }
 
             @Override
             public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -103,30 +106,32 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
                 matrix.setColumn(1, 0.0f, -1.0f, 0.0f, 0.0f);
                 matrix.setColumn(2, 0.0f, 0.0f, -1.0f, 0.0f);
                 matrix.setColumn(3, 0.0f, 0.0f, 0.0f, 1.0f);
-                plane.setRotationMatrix(matrix);
+                mainFace.setRotationMatrix(matrix);
             }
 
             @Override
             public void onDrawFrame(GL10 gl) {
 //                plane.scale(scale);
                 if (touchTurn != 0) {
-                    plane.rotateY(touchTurn);
+                    mainFace.rotateY(touchTurn);
                     touchTurn = 0;
                 }
 
-                Log.i("zhong", "onDrawFrame: " + plane.getScale() +
-                        " || " + plane.getRotationMatrix());
+                Log.i("zhong", "onDrawFrame: " + mainFace.getScale() +
+                        " || " + mainFace.getRotationMatrix());
                 if (scale != 0.0f) {
                     float tempScale = 1.0f + scale;
                     if (tempScale >= 0.0f)
-                        plane.scale(tempScale);
+                        mainFace.scale(tempScale);
                     else
-                        plane.scale(1.0f);
+                        mainFace.scale(1.0f);
                     scale = 0.0f;
                 }
 
+                shader.setUniform("heightScale", scale);
+
                 if (touchTurnUp != 0) {
-                    plane.rotateX(touchTurnUp);
+                    mainFace.rotateX(touchTurnUp);
                     touchTurnUp = 0;
                 }
 
@@ -148,60 +153,42 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
             @Override
             protected Void doInBackground(Void... voids) {
                 try {
-                    Log.i("happy", "create start");
-//                    object3Ds = Loader.loadOBJ(getStream("assets/pikachu/pikachu.obj"),
-//                            getStream("assets/pikachu/pikachu.mtl"), 0.2f);
-                    object3Ds = Loader.loadOBJ(getStream("assets/face/head3d.obj"),
-                            getStream("assets/face/head3d.mtl"), 0.25f);
-
-                    Log.i("happy", "object3Ds: end");
-
-                    bitmap = BitmapFactory.decodeStream(getStream("assets/face/head3d.jpg"));
-
-                    Log.i("happy", "bitmap: end");
-
-                    Texture texture = new Texture(bitmap);
-                    TextureManager.getInstance().addTexture("face", texture);
-
-                    Log.i("happy", "Texture: end");
-
                     world = new World();
 
-                    plane = object3Ds[0];
-                    for (int i = 1;i < object3Ds.length;i++) {
-                        plane.addChild(object3Ds[i]);
-                        object3Ds[i].build();
-                        object3Ds[i].strip();
+                    Log.i("happy", "create start");
+                    facePoints = Loader.loadOBJ(getStream("assets/face/head3d.obj"),
+//                    facePoints = Loader.loadOBJ(getStream("assets/headex/merge3d.obj"),
+                            getStream("assets/face/head3d.mtl"), 0.2f);
+//                            getStream("assets/headex/merge3d.obj.mtl"), 0.8f);
+                    Log.i("happy", "object3Ds: end");
+                    textureInit();
+                    shader = new GLSLShader(
+                            Loader.loadTextFile(getResources().openRawResource(R.raw.vertexshader_offset)),
+                            Loader.loadTextFile(getResources().openRawResource(R.raw.fragmentshader_offset)));
+                    shader.setStaticUniform("invRadius", 0.01f);
+
+                    mainFace = facePoints[0];
+//                    mainFace.calcTextureWrapSpherical();
+                    mainFace.setTexture("face");
+                    mainFace.setSpecularLighting(true);
+                    mainFace.setShader(shader);
+                    for (int i = 1; i < facePoints.length;i++) {
+                        mainFace.addChild(facePoints[i]);
+                        facePoints[i].build();
+                        facePoints[i].strip();
                     }
+                    mainFace.build();
+                    mainFace.strip();
 
-                    plane.setTexture("face");
-                    plane.setSpecularLighting(true);
-
-                    plane.build();
-                    plane.strip();
-
-                    Log.i("happy", "obj build: end");
-
-                    Log.v("zhong", object3Ds.length + " || onSurfaceChanged: ");
-
-                    world.addObjects(object3Ds);
-
-                    light = new Light(world);
-                    light.enable();
-
-                    light.setIntensity(250, 250, 250);
-                    light.setPosition(SimpleVector.create(0, 0, -200));
-                    light.setDiscardDistance(2000f);
-                    world.setAmbientLight(20, 20, 20);
-
+                    Log.i("happy", "obj build: end + " + facePoints.length);
+                    world.addObjects(facePoints);
+                    lightInit(world, mainFace);
 
                     Camera cam = world.getCamera();
-                    cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
-                    cam.lookAt(plane.getTransformedCenter());
-
-                    MemoryHelper.compact();
-
+                    cam.moveCamera(Camera.CAMERA_MOVEOUT, 80);
+                    cam.lookAt(mainFace.getTransformedCenter());
                     world.compileAllObjects();
+                    MemoryHelper.compact();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -215,6 +202,53 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
                 mGLView.setVisibility(View.VISIBLE);
             }
         }.execute();
+    }
+
+    /**
+     * 贴图初始化
+     * @throws Exception
+     */
+    private void textureInit() throws IOException {
+        Bitmap bitmap1 = BitmapFactory.decodeStream(getStream("assets/face/head3d.jpg"));
+//        Bitmap bitmap1 = BitmapFactory.decodeStream(getStream("assets/headex/merge3d.jpg"));
+//        Bitmap bitmap2 = BitmapFactory.decodeStream(getStream("assets/headex/Bellus3D_logo_square.png"));
+        Log.i("happy", "bitmap: end");
+        Texture texture1 = new Texture(bitmap1);
+//        Texture texture2 = new Texture(bitmap2);
+        TextureManager.getInstance().addTexture("face", texture1);
+//        TextureManager.getInstance().addTexture("logo", texture2);
+        Log.i("happy", "Texture: end");
+    }
+
+    /**
+     * 光线初始化
+     * @param world
+     */
+    private void lightInit(World world, Object3D object3D) {
+//        环境光
+        world.setAmbientLight(150, 150, 150);
+
+        SimpleVector vector = object3D.getTransformedCenter();
+        vector.y += 50;
+        vector.z -= 70;
+        vector.x -= 70;
+
+        light1 = new Light(world);
+        light1.enable();
+        light1.setAttenuation(10.0f);
+        light1.setDiscardDistance(2.0f);
+        light1.setIntensity(10, 10, 10);
+        light1.setPosition(vector);
+
+//        light2 = new Light(world);
+//        light2.enable();
+//        light2.setIntensity(60, 50, 50);
+//        light2.setPosition(SimpleVector.create(2000, 0, 0));
+////
+//        light3 = new Light(world);
+//        light3.enable();
+//        light3.setIntensity(60, 50, 50);
+//        light3.setPosition(SimpleVector.create(0, 2000, 0));
     }
 
     @Override
@@ -284,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
         }
 
         try {
-            Thread.sleep(15);
+            Thread.sleep(10);
         } catch (Exception e) {
             // No need for this...
         }
