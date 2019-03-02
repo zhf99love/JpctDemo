@@ -127,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
                         mainFace.scale(1.0f);
                     else if (tempScale > 3.0f)
                         mainFace.scale(2.0f);
-                    shader.setUniform("heightScale", scale);
                     scale = 0.0f;
                 }
 //
@@ -157,8 +156,11 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
                 try {
                     world = new World();
                     Log.i("happy", "create start");
-                    facePoints = Loader.loadOBJ(getStream("assets/face/head3d.obj"),
-                            getStream("assets/face/head3d.mtl"), 0.23f);
+//                    facePoints = Loader.loadOBJ(getStream("assets/face/head3d.obj"),
+//                            getStream("assets/face/head3d.mtl"), 0.23f);
+                    facePoints = Loader.loadOBJ(getStream("assets/headex/merge3d.obj"),
+                            getStream("assets/headex/merge3d.obj.mtl"), 0.23f);
+
                     Log.i("happy", "object3Ds: end");
                     textureInit();
                     shader = new GLSLShader(
@@ -167,7 +169,6 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
                     shader.setStaticUniform("invRadius", 0.01f);
 
                     mainFace = facePoints[0];
-//                    mainFace.calcTextureWrapSpherical();
                     mainFace.setTexture("face");
                     mainFace.setSpecularLighting(false);
                     mainFace.setShader(shader);
@@ -209,14 +210,11 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
      * @throws Exception
      */
     private void textureInit() throws IOException {
-        Bitmap bitmap1 = BitmapFactory.decodeStream(getStream("assets/face/head3d.jpg"));
-//        Bitmap bitmap1 = BitmapFactory.decodeStream(getStream("assets/headex/merge3d.jpg"));
-//        Bitmap bitmap2 = BitmapFactory.decodeStream(getStream("assets/headex/Bellus3D_logo_square.png"));
+//        Bitmap bitmap1 = BitmapFactory.decodeStream(getStream("assets/face/head3d.jpg"));
+        Bitmap bitmap1 = BitmapFactory.decodeStream(getStream("assets/headex/merge3d.jpg"));
         Log.i("happy", "bitmap: end");
         Texture texture1 = new Texture(bitmap1);
-//        Texture texture2 = new Texture(bitmap2);
         TextureManager.getInstance().addTexture("face", texture1);
-//        TextureManager.getInstance().addTexture("logo", texture2);
         Log.i("happy", "Texture: end");
     }
 
@@ -226,26 +224,26 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
      */
     private void lightInit(World world, Object3D object3D) {
 //        环境光
-        world.setAmbientLight(70, 70, 70);
+        world.setAmbientLight(200, 200, 200);
 
         SimpleVector vector1 = object3D.getTransformedCenter();
-        vector1.y += 5;
+        vector1.y += 15;
         vector1.z -= 45;
         vector1.x -= 40;
 
         Light light1 = new Light(world);
         light1.enable();
-        light1.setIntensity(80, 80, 80);
+        light1.setIntensity(100, 100, 100);
         light1.setPosition(vector1);
-
+//
         SimpleVector vector2 = object3D.getTransformedCenter();
-        vector2.y -= 5;
-        vector2.z += 40;
-        vector2.x -= 45;
+        vector2.y -= 20;
+        vector2.z += 50;
+        vector2.x -= 50;
 
         Light light2 = new Light(world);
         light2.enable();
-        light2.setIntensity(110, 110, 110);
+        light2.setIntensity(160, 160, 160);
         light2.setPosition(vector2);
     }
 
