@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
     private ContentLoadingProgressBar progressBar;
 
     private World world = null;
-    private Light light1, light2, light3;
+//    private Light light1, light2, light3;
 
     private FrameBuffer frameBuffer = null;
 
@@ -92,21 +92,21 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
 
             @Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            }
-
-            @Override
-            public void onSurfaceChanged(GL10 gl, int width, int height) {
-                Log.i("happy", "onSurfaceChanged: start");
-                frameBuffer = null;
-                frameBuffer = new FrameBuffer(width, height);
-                Log.i("happy", "onSurfaceChanged: end");
-
+                Log.i("happy", "onSurfaceCreated: start");
                 Matrix matrix = new Matrix();
                 matrix.setColumn(0, 1.0f, 0.0f, 0.0f, 0.0f);
                 matrix.setColumn(1, 0.0f, -1.0f, 0.0f, 0.0f);
                 matrix.setColumn(2, 0.0f, 0.0f, -1.0f, 0.0f);
                 matrix.setColumn(3, 0.0f, 0.0f, 0.0f, 1.0f);
                 mainFace.setRotationMatrix(matrix);
+            }
+
+            @Override
+            public void onSurfaceChanged(GL10 gl, int width, int height) {
+                Log.i("happy", "onSurfaceChanged: start");
+                if (frameBuffer == null)
+                    frameBuffer = new FrameBuffer(width, height);
+                Log.i("happy", "onSurfaceChanged: end");
             }
 
             @Override
@@ -121,14 +121,16 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
                         " || " + mainFace.getRotationMatrix());
                 if (scale != 0.0f) {
                     float tempScale = 1.0f + scale;
-                    if (tempScale >= 0.0f)
+                    if (tempScale >= 0.0f && tempScale <= 3.0f)
                         mainFace.scale(tempScale);
-                    else
+                    else if (tempScale < 0.0f)
                         mainFace.scale(1.0f);
+                    else if (tempScale > 3.0f)
+                        mainFace.scale(2.0f);
+                    shader.setUniform("heightScale", scale);
                     scale = 0.0f;
                 }
-
-                shader.setUniform("heightScale", scale);
+//
 
                 if (touchTurnUp != 0) {
                     mainFace.rotateX(touchTurnUp);
@@ -154,12 +156,9 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
             protected Void doInBackground(Void... voids) {
                 try {
                     world = new World();
-
                     Log.i("happy", "create start");
                     facePoints = Loader.loadOBJ(getStream("assets/face/head3d.obj"),
-//                    facePoints = Loader.loadOBJ(getStream("assets/headex/merge3d.obj"),
-                            getStream("assets/face/head3d.mtl"), 0.2f);
-//                            getStream("assets/headex/merge3d.obj.mtl"), 0.8f);
+                            getStream("assets/face/head3d.mtl"), 0.23f);
                     Log.i("happy", "object3Ds: end");
                     textureInit();
                     shader = new GLSLShader(
@@ -170,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
                     mainFace = facePoints[0];
 //                    mainFace.calcTextureWrapSpherical();
                     mainFace.setTexture("face");
-                    mainFace.setSpecularLighting(true);
+                    mainFace.setSpecularLighting(false);
                     mainFace.setShader(shader);
                     for (int i = 1; i < facePoints.length;i++) {
                         mainFace.addChild(facePoints[i]);
@@ -182,13 +181,14 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
 
                     Log.i("happy", "obj build: end + " + facePoints.length);
                     world.addObjects(facePoints);
-                    lightInit(world, mainFace);
 
                     Camera cam = world.getCamera();
                     cam.moveCamera(Camera.CAMERA_MOVEOUT, 80);
                     cam.lookAt(mainFace.getTransformedCenter());
                     world.compileAllObjects();
                     MemoryHelper.compact();
+
+                    lightInit(world, mainFace);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -226,41 +226,27 @@ public class MainActivity extends AppCompatActivity implements ScaleGestureDetec
      */
     private void lightInit(World world, Object3D object3D) {
 //        环境光
-        world.setAmbientLight(150, 150, 150);
+        world.setAmbientLight(70, 70, 70);
 
-        SimpleVector vector = object3D.getTransformedCenter();
-        vector.y += 50;
-        vector.z -= 70;
-        vector.x -= 70;
+        SimpleVector vector1 = object3D.getTransformedCenter();
+        vector1.y += 5;
+        vector1.z -= 45;
+        vector1.x -= 40;
 
-        light1 = new Light(world);
+        Light light1 = new Light(world);
         light1.enable();
-        light1.setAttenuation(10.0f);
-        light1.setDiscardDistance(2.0f);
-        light1.setIntensity(10, 10, 10);
-        light1.setPosition(vector);
+        light1.setIntensity(80, 80, 80);
+        light1.setPosition(vector1);
 
-//        light2 = new Light(world);
-//        light2.enable();
-//        light2.setIntensity(60, 50, 50);
-//        light2.setPosition(SimpleVector.create(2000, 0, 0));
-////
-//        light3 = new Light(world);
-//        light3.enable();
-//        light3.setIntensity(60, 50, 50);
-//        light3.setPosition(SimpleVector.create(0, 2000, 0));
-    }
+        SimpleVector vector2 = object3D.getTransformedCenter();
+        vector2.y -= 5;
+        vector2.z += 40;
+        vector2.x -= 45;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mGLView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mGLView.onPause();
+        Light light2 = new Light(world);
+        light2.enable();
+        light2.setIntensity(110, 110, 110);
+        light2.setPosition(vector2);
     }
 
     /**
