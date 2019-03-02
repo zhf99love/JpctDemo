@@ -1,0 +1,163 @@
+Fri Mar  1 15:18:58 2019 INFO DEBUG: frame store[0], count=91
+
+Fri Mar  1 15:18:58 2019 INFO DEBUG: frame store[1], count=91
+
+Fri Mar  1 15:18:58 2019 INFO DEBUG: frame store[2], count=95
+
+Fri Mar  1 15:18:58 2019 INFO DEBUG: frame store[3], count=75
+
+Fri Mar  1 15:18:58 2019 INFO DEBUG: frame store[4], count=0
+
+Fri Mar  1 15:18:58 2019 INFO DEBUG: frame store[5], count=0
+
+Fri Mar  1 15:18:58 2019 >>> OPENCV version number:  3.4.1
+
+Fri Mar  1 15:18:58 2019 INFO B3D API version number: 2.0.12d
+
+Fri Mar  1 15:18:58 2019 INFO B3D internal API version number: 1.9.138.4
+
+Fri Mar  1 15:18:58 2019 INFO ScannerSessionData DepthCameraType:   B3D3
+
+Fri Mar  1 15:18:58 2019 INFO ScannerSessionData DepthCameraID:     FCP80611670
+
+Fri Mar  1 15:18:58 2019 INFO ScannerSessionData Capture in memory: 0
+
+Fri Mar  1 15:18:58 2019 INFO ScannerSessionData Scanning Mode:     1
+
+Fri Mar  1 15:18:58 2019 INFO HeadProcessor Output directory: /sdcard/bragi/Output/2019.03.01.15.18.35/Output_sd/
+
+Fri Mar  1 15:18:58 2019 INFO HeadProcessor MeshResolution:   0
+
+Fri Mar  1 15:18:58 2019 INFO HeadProcessor MeshEnhancement:  3
+
+Fri Mar  1 15:18:58 2019 INFO HeadProcessor RemoveRawImage:   1
+
+Fri Mar  1 15:18:58 2019 INFO HeadProcessor MeshSmoothness:   10
+
+Fri Mar  1 15:18:58 2019 INFO HeadProcessor TextureSource:    1
+
+Fri Mar  1 15:18:58 2019 INFO HeadProcessor Recalibrate:      0
+
+Fri Mar  1 15:18:58 2019 INFO buildMesh processing starts...
+
+Fri Mar  1 15:18:58 2019 INFO buildMesh: Depth camera type is B3D3
+
+Fri Mar  1 15:18:58 2019 INFO buildMesh: input frame stores L=91 R=91 M=95 C=75 D=0
+
+Fri Mar  1 15:18:58 2019 INFO buildMesh scanMode is 0 turning mode is 1
+
+Fri Mar  1 15:18:58 2019 INFO buildMesh: compute texture from frame store id=3 count=75
+
+Fri Mar  1 15:18:58 2019 INFO buildMesh: auto detect C cam image rotation
+
+Fri Mar  1 15:18:58 2019 INFO Depth camera type is 1
+
+Fri Mar  1 15:18:58 2019 INFO Checking calibration...
+
+Fri Mar  1 15:18:59 2019 INFO Recalibration takes 0.6923 sec
+
+Fri Mar  1 15:18:59 2019 INFO Source image scale is 0.75 Output depth map size is 1280 1280
+
+Fri Mar  1 15:18:59 2019 INFO compuDepth: compute from input L/R images
+
+Fri Mar  1 15:18:59 2019 INFO compuDepth input frameCount=91
+
+Fri Mar  1 15:18:59 2019 INFO compuDepth: starting head pose X:-5.65 Y:-0.48 Z:4.71 degrees
+
+Fri Mar  1 15:18:59 2019 INFO compuDepth: faceDistance=367.8
+
+Fri Mar  1 15:18:59 2019 INFO compuDepth: input head rotation range X:(-0.0 to 9.5) Y:(-68.4 to 63.4) Z:(-68.4 63.4)
+
+Fri Mar  1 15:18:59 2019 INFO compuDepth: number of frames selected to process: 88
+
+Fri Mar  1 15:18:59 2019 INFO compuDepth: Number of threads=4
+
+Fri Mar  1 15:18:59 2019 >>> HeadBuilder::buildDepthMap Face distance= 368.17 mm
+
+Fri Mar  1 15:18:59 2019 INFO HeadBuilder: starting head rotation X:-6.10 Y:-1.01 Z:4.57 degrees
+
+Fri Mar  1 15:19:11 2019 INFO compuDepth: start mergeFrames...
+
+Fri Mar  1 15:19:12 2019 INFO compuDepth: start filtering...
+
+Fri Mar  1 15:19:13 2019 INFO HeadBuilder::filterDepthMap scanMode is 0. Crop rect is (175 107 1150 699)
+
+Fri Mar  1 15:19:14 2019 >>> compuDepth takes total: 15.1334 sec
+
+Fri Mar  1 15:19:14 2019 >>> -- Frames processed: 88. avg time: 136.27 msec/fr. total: 11.9918 sec (with OMP if enabled)
+
+Fri Mar  1 15:19:14 2019 >>> ---- Single frame time (no OMP): 498.36 msec
+
+Fri Mar  1 15:19:14 2019 >>> ------ Read frame: 37.59 msec/fr. 7.54%
+
+Fri Mar  1 15:19:14 2019 >>> ------ Compute depth: 324.80 msec/fr. 65.17%
+
+Fri Mar  1 15:19:14 2019 >>> ------ Tracking: 70.74 msec/fr. 14.20%
+
+Fri Mar  1 15:19:14 2019 >>> ------ Projection: 49.78 msec/fr. 9.99%
+
+Fri Mar  1 15:19:14 2019 >>> ------ Merging: 14.63 msec/fr. 2.94%
+
+Fri Mar  1 15:19:14 2019 >>> ------ Wait time: 0.00 msec/fr. 0.00%
+
+Fri Mar  1 15:19:14 2019 >>> -- Merge frames: 0.5415 sec
+
+Fri Mar  1 15:19:14 2019 >>> -- Filtering: 2.2269 sec
+
+Fri Mar  1 15:19:14 2019 INFO buildMesh: selecting frontal frame from first 3 frames
+
+Fri Mar  1 15:19:15 2019 INFO buildMesh: Select frame index 2 as the frontal frame
+
+Fri Mar  1 15:19:15 2019 INFO buildMesh: texture map size is 4096 4096
+
+Fri Mar  1 15:19:15 2019 INFO compuTexture start... 
+
+Fri Mar  1 15:19:15 2019 INFO computeTexture: Scan mode=0 initial Pose=-6.1 -1.0 4.6, Rotation range X:0.0 to 9.3, Y:-68.3 to 64.4: 6
+
+Fri Mar  1 15:19:15 2019 INFO computeTexture: file count: 75, selected files index:(angle):
+23:(8.27431, 62.4114, 7.92407)
+59:(2.60292, -65.4598, 3.99143)
+-1:(0, 0, 0)
+-1:(0, 0, 0)
+10:(2.11468, 23.7382, 5.13929)
+46:(2.24743, -35.6713, -2.88713)
+-1:(0, 0, 0)
+-1:(0, 0, 0)
+2:(0.377039, -0.210348, 0.235625)
+
+Fri Mar  1 15:19:18 2019 WARNING CameraParams::computeExtrinsics: Insufficient number of inliers found 5; min is 8
+
+Fri Mar  1 15:19:19 2019 WARNING CameraParams::computeExtrinsics: Insufficient number of inliers found 5; min is 8
+
+Fri Mar  1 15:19:19 2019 WARNING compuTexture: compute transformation for file index 46 failed. Skip it.
+
+Fri Mar  1 15:19:19 2019 >>> compuTexture takes total 4.0604 sec (with OMP if enabled)
+
+Fri Mar  1 15:19:19 2019 >>> -- Select color images: 966.51 msec
+
+Fri Mar  1 15:19:19 2019 >>> -- Project color images: 2654.11 msec
+
+Fri Mar  1 15:19:19 2019 >>> -- Blend color images: 147.66 msec
+
+Fri Mar  1 15:19:19 2019 INFO White balance enabled target color=240.0 245.0 255.0
+
+Fri Mar  1 15:19:20 2019 >>> Enhance depth from texture map
+
+Fri Mar  1 15:19:22 2019 >>> Head pose tracking takes 0.0000 sec
+
+Fri Mar  1 15:19:22 2019 >>> Mesh creation takes 15.1381 sec
+
+Fri Mar  1 15:19:22 2019 >>> Texture creation takes 4.2174 sec
+
+Fri Mar  1 15:19:22 2019 >>> Mesh enhancement takes 0.6198 sec
+
+Fri Mar  1 15:19:22 2019 >>> Mesh simplification takes 0.0191 sec
+
+Fri Mar  1 15:19:22 2019 >>> Writing mesh and texture files takes 0.0000 sec
+
+Fri Mar  1 15:19:22 2019 >>> BuildMesh total time: 24.0549 sec
+
+Fri Mar  1 15:19:22 2019 INFO Mesh files are not saved automatically
+
+Fri Mar  1 15:19:22 2019 INFO HeadScannerSessionData::clear() called. RemoveDiskFile: 1
+
